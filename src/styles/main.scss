@@ -1,0 +1,78 @@
+// src/styles/main.scss
+@use 'vuetify/styles';
+@use './settings';
+
+// أنماط عامة للتطبيق
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  direction: rtl; // للغة العربية
+  font-family: 'Segoe UI', 'Cairo', 'Tahoma', 'Arial', sans-serif;
+}
+
+// تحسين شريط التمرير
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+// تحسينات للوضع المظلم
+.v-theme--dark {
+  ::-webkit-scrollbar-track {
+    background: #2c2c2c;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #555;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #777;
+  }
+}
+
+// تحسينات للاختيار
+::selection {
+  background-color: rgba(var(--v-theme-primary), 0.3);
+  color: inherit;
+}
+
+// تحسينات للصور
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// تحسينات للروابط
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: rgb(var(--v-theme-primary));
+  }
+}

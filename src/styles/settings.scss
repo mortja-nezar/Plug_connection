@@ -1,0 +1,37 @@
+// src/styles/settings.scss
+@use 'vuetify/settings' with (
+  $color-pack: true
+);
+
+// تخصيصات إضافية
+.v-application {
+  font-family: 'Segoe UI', 'Cairo', 'Tahoma', 'Arial', sans-serif;
+}
+
+// RTL support
+[dir="rtl"] {
+  .v-application {
+    text-align: right;
+  }
+}
+
+// تخصيصات للكروت
+.v-card {
+  border-radius: 12px;
+  transition: box-shadow 0.3s ease;
+}
+
+.v-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+// تخصيصات للأزرار
+.v-btn {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+// تخصيصات للـ inputs
+.v-field {
+  border-radius: 8px;
+}
