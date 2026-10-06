@@ -183,6 +183,100 @@ app.get("/posts/:id/comments", (req, res) => {
   });
 });
 
+// POST create new post
+app.post("/posts", (req, res) => {
+  const { userId, title, body } = req.body;
+  db.run(
+    "INSERT INTO posts (userId, title, body) VALUES (?, ?, ?)",
+    [userId, title, body],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.status(201).json({ id: this.lastID, userId, title, body });
+    },
+  );
+});
+
+// PUT update post
+app.put("/posts/:id", (req, res) => {
+  const { title, body } = req.body;
+  db.run(
+    "UPDATE posts SET title = ?, body = ? WHERE id = ?",
+    [title, body, req.params.id],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Post not found" });
+        return;
+      }
+      res.json({ id: req.params.id, title, body });
+    },
+  );
+});
+
+// DELETE post
+app.delete("/posts/:id", (req, res) => {
+  db.run("DELETE FROM posts WHERE id = ?", [req.params.id], function (err) {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (this.changes === 0) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+    res.json({ message: "Post deleted successfully" });
+  });
+});
+
+// POST create new comment
+app.post("/comments", (req, res) => {
+  const { postId, name, email, body } = req.body;
+  db.run(
+    "INSERT INTO comments (postId, name, email, body) VALUES (?, ?, ?, ?)",
+    [postId, name, email, body],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.status(201).json({ id: this.lastID, postId, name, email, body });
+    },
+  );
+});
+
+// POST create new album
+app.post("/albums", (req, res) => {
+  const { userId, title } = req.body;
+  db.run(
+    "INSERT INTO albums (userId, title) VALUES (?, ?)",
+    [userId, title],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.status(201).json({ id: this.lastID, userId, title });
+    },
+  );
+});
+
+// GET user albums
+app.get("/users/:id/albums", (req, res) => {
+  db.all("SELECT * FROM albums WHERE userId = ?", [req.params.id], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
 // ============= Todos Endpoints =============
 // GET todos by user ID
 app.get("/todos", (req, res) => {
@@ -207,22 +301,101 @@ app.get("/todos", (req, res) => {
   }
 });
 
+// GET user todos
+app.get("/users/:id/todos", (req, res) => {
+  db.all("SELECT * FROM todos WHERE userId = ?", [req.params.id], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+// POST create new todo
+app.post("/todos", (req, res) => {
+  const { userId, title } = req.body;
+  db.run(
+    "INSERT INTO todos (userId, title, completed) VALUES (?, ?, 0)",
+    [userId, title],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.status(201).json({ id: this.lastID, userId, title, completed: 0 });
+    },
+  );
+});
+
+// PUT update todo
+app.put("/todos/:id", (req, res) => {
+  const { title, completed } = req.body;
+  db.run(
+    "UPDATE todos SET title = ?, completed = ? WHERE id = ?",
+    [title, completed, req.params.id],
+    function (err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Todo not found" });
+        return;
+      }
+      res.json({ id: req.params.id, title, completed });
+    },
+  );
+});
+
+// DELETE todo
+app.delete("/todos/:id", (req, res) => {
+  db.run("DELETE FROM todos WHERE id = ?", [req.params.id], function (err) {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (this.changes === 0) {
+      res.status(404).json({ error: "Todo not found" });
+      return;
+    }
+    res.json({ message: "Todo deleted successfully" });
+  });
+});
+
 // ============= Server Start =============
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`📊 Database initialized and ready`);
   console.log(`\n🔗 Available endpoints:`);
-  console.log(`   GET    /users`);
-  console.log(`   GET    /users/:id`);
-  console.log(`   POST   /users`);
-  console.log(`   PUT    /users/:id`);
-  console.log(`   DELETE /users/:id`);
-  console.log(`   GET    /albums`);
-  console.log(`   GET    /albums/:id`);
-  console.log(`   DELETE /albums/:id`);
-  console.log(`   GET    /albums/:id/photos`);
-  console.log(`   GET    /posts`);
-  console.log(`   GET    /posts/:id`);
-  console.log(`   GET    /posts/:id/comments`);
-  console.log(`   GET    /todos?userId=:id`);
+  console.log(`\n   👥 Users:`);
+  console.log(`      GET    /users`);
+  console.log(`      GET    /users/:id`);
+  console.log(`      POST   /users`);
+  console.log(`      PUT    /users/:id`);
+  console.log(`      DELETE /users/:id`);
+  console.log(`      GET    /users/:id/albums`);
+  console.log(`      GET    /users/:id/todos`);
+  console.log(`\n   📸 Albums:`);
+  console.log(`      GET    /albums`);
+  console.log(`      GET    /albums/:id`);
+  console.log(`      POST   /albums`);
+  console.log(`      DELETE /albums/:id`);
+  console.log(`      GET    /albums/:id/photos`);
+  console.log(`\n   📝 Posts:`);
+  console.log(`      GET    /posts`);
+  console.log(`      GET    /posts/:id`);
+  console.log(`      POST   /posts`);
+  console.log(`      PUT    /posts/:id`);
+  console.log(`      DELETE /posts/:id`);
+  console.log(`      GET    /posts/:id/comments`);
+  console.log(`\n   💬 Comments:`);
+  console.log(`      POST   /comments`);
+  console.log(`\n   ✅ Todos:`);
+  console.log(`      GET    /todos`);
+  console.log(`      GET    /todos?userId=:id`);
+  console.log(`      GET    /users/:id/todos`);
+  console.log(`      POST   /todos`);
+  console.log(`      PUT    /todos/:id`);
+  console.log(`      DELETE /todos/:id`);
 });

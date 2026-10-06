@@ -1,28 +1,16 @@
 <template>
-  <!-- حالة التحميل -->
-  <div v-if="loading" class="text-center py-12">
-    <v-progress-circular
-      indeterminate
-      color="primary"
-      size="64"
-      width="5"
-      class="mb-4"
-    />
-    <div class="text-h6 text-medium-emphasis">
-      جارٍ تحميل البيانات...
-    </div>
-  </div>
+  <v-progress-linear v-if="loading" indeterminate color="primary" height="3" />
 
   <!-- الصفحة الرئيسية -->
-  <v-container fluid v-else class="pa-4 pa-md-6">
+  <v-container fluid class="pa-4 pa-md-6">
     <!-- العنوان الرئيسي -->
     <v-row class="mb-8">
       <v-col cols="12">
         <div class="d-flex align-center mb-4">
-          <v-icon 
-            icon="mdi-home-analytics" 
-            size="x-large" 
-            color="primary" 
+          <v-icon
+            icon="mdi-home-analytics"
+            size="x-large"
+            color="primary"
             class="mr-3"
           />
           <div>
@@ -40,9 +28,9 @@
     <!-- إحصائيات سريعة -->
     <v-row class="mb-8">
       <v-col cols="12" md="3" v-for="stat in quickStats" :key="stat.title">
-        <v-card 
-          class="text-center pa-4 h-100" 
-          elevation="2" 
+        <v-card
+          class="text-center pa-4 h-100"
+          elevation="2"
           rounded="lg"
           :color="stat.color"
           variant="tonal"
@@ -52,15 +40,15 @@
           <v-icon size="40" :color="stat.iconColor" class="mb-3">
             {{ stat.icon }}
           </v-icon>
-          
+
           <v-card-title class="justify-center text-h6 font-weight-medium">
             {{ stat.title }}
           </v-card-title>
-          
+
           <v-card-text class="text-h3 font-weight-bold">
             {{ stat.count }}
           </v-card-text>
-          
+
           <v-card-subtitle class="text-caption">
             {{ stat.subtitle }}
           </v-card-subtitle>
@@ -71,9 +59,9 @@
     <!-- بطاقات البيانات -->
     <v-row justify="center" align="stretch" class="ga-6 mb-8">
       <v-col cols="12" md="6" v-for="card in cards" :key="card.title">
-        <v-card 
-          class="pa-6 h-100" 
-          elevation="4" 
+        <v-card
+          class="pa-6 h-100"
+          elevation="4"
           rounded="xl"
           hover
           @click="router.push(card.route)"
@@ -93,7 +81,7 @@
               </v-card-subtitle>
             </div>
           </div>
-          
+
           <v-card-text class="text-center">
             <div class="text-h2 font-weight-bold mb-2">
               {{ card.count }}
@@ -102,7 +90,7 @@
               {{ card.unit }}
             </div>
           </v-card-text>
-          
+
           <v-card-actions>
             <v-btn
               :color="card.color"
@@ -263,10 +251,10 @@ const dataStore = useDataStore();
 const uiStore = useUIStore();
 
 // حالة التحميل
-const loading = computed(() => 
-  dataStore.isLoading && 
-  !dataStore.users.length && 
-  !dataStore.posts.length && 
+const loading = computed(() =>
+  dataStore.isLoading &&
+  !dataStore.users.length &&
+  !dataStore.posts.length &&
   !dataStore.albums.length
 );
 
@@ -348,15 +336,15 @@ const cards = computed(() => [
 ]);
 
 // أحدث البيانات
-const latestUsers = computed(() => 
+const latestUsers = computed(() =>
   [...dataStore.users].sort((a, b) => b.id - a.id).slice(0, 3)
 );
 
-const latestPosts = computed(() => 
+const latestPosts = computed(() =>
   [...dataStore.posts].sort((a, b) => b.id - a.id).slice(0, 3)
 );
 
-const latestAlbums = computed(() => 
+const latestAlbums = computed(() =>
   [...dataStore.albums].sort((a, b) => b.id - a.id).slice(0, 3)
 );
 

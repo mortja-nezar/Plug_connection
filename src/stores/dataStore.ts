@@ -422,6 +422,29 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    // ============ Fetch All Data ============
+    async fetchAllData() {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        // Fetch all data in parallel
+        const [users, posts, albums, todos] = await Promise.all([
+          this.fetchUsers(true),
+          this.fetchPosts(true),
+          this.fetchAlbums(true),
+          this.fetchTodos(true),
+        ]);
+
+        return { users, posts, albums, todos };
+      } catch (error: any) {
+        this.error = error.message || "فشل في تحميل البيانات";
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
     // ============ Utility Actions ============
     clearError() {
       this.error = null;

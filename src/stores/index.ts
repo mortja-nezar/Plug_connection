@@ -3,4 +3,3 @@
 export { useDataStore } from './dataStore';
 export { useUIStore } from './uiStore';
 export { useAuthStore } from './authStore';
-export { api } from './api';
